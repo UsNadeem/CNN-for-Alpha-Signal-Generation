@@ -130,4 +130,28 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 
 ## Train the data
 model.fit(x_train_enc, y_train, epochs=10, validation_data=(x_val_enc, y_val))
+
+## Evaluate the model
+score = model.evaluate(x_val_enc, y_val)
+
+## Check the accuracy
+print('Accuracy:', score[1])
+```
+We are now able to compute the scores:
+
+```
+## Tokenize the data we need to check
+hd['HD']=hd['Headlines'].apply(lamda hd: tokenizer([hd], truncation=True, padding=True))
+
+## Convert tokens to np array
+hd['HD2']=hd['HD'].apply(lambda hd: np.array(hd['input_ids']))
+
+## Prediction
+hd['predict']=hd['HD2'].apply(model.predict)
+
+#Import softmax
+from scipy.special import softmax
+
+## Apply to prediction
+hd['score']=hd['predict'].apply(lambda pred: softmax(pred.logits))
 ```
