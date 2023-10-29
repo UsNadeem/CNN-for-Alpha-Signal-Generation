@@ -113,5 +113,21 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 Now we train our model
 
 ```
+## Create a BERT model
+model = TFBertForSequenceClassification.from_pretrained('bert-base-uncased')
 
+## Add a convolutional layer, max pooling layer, flatten the output, add a dense layer, and an output layer
+model.classifier = tf.keras.Sequential([
+    tf.keras.layers.Reshape((model.config.hidden_size, 1)),
+    tf.keras.layers.Conv1D(filters=32, kernel_size=3, activation='relu'),
+    tf.keras.layers.MaxPooling1D(pool_size=2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')])
+
+## Compile the model
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+## Train the data
+model.fit(x_train_enc, y_train, epochs=10, validation_data=(x_val_enc, y_val))
 ```
